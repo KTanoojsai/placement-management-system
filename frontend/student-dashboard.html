@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard — Placement Portal</title>
+    <meta name="description" content="Student placement dashboard - view companies, apply for jobs, track applications, and manage your profile.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Placement Portal</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-section="home">
+                    <span class="icon">🏠</span> Dashboard
+                </button>
+                <button class="nav-btn" data-section="profile">
+                    <span class="icon">👤</span> My Profile
+                </button>
+                <button class="nav-btn" data-section="companies">
+                    <span class="icon">🏢</span> Companies
+                </button>
+                <button class="nav-btn" data-section="applications">
+                    <span class="icon">📋</span> My Applications
+                </button>
+                <button class="nav-btn" data-section="status">
+                    <span class="icon">🎯</span> Placement Status
+                </button>
+            </nav>
+            <button class="logout-btn" id="logoutBtn">
+                <span class="icon">🚪</span> Logout
+            </button>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Sidebar">
+                    ☰
+                </button>
+                <div>
+                    <h1 id="welcome">Welcome!</h1>
+                    <p>Track your placement journey</p>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <!-- Dashboard Overview -->
+                <section id="home" class="section active">
+                    <h2>Dashboard Overview</h2>
+                    <div class="cards-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">🏢</div>
+                            <div class="stat-value" id="companyCount">0</div>
+                            <div class="stat-label">Companies Available</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">📋</div>
+                            <div class="stat-value" id="applicationCount">0</div>
+                            <div class="stat-label">Applications Sent</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">✅</div>
+                            <div class="stat-value" id="selectedCount">0</div>
+                            <div class="stat-label">Selections</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon amber">⏳</div>
+                            <div class="stat-value" id="pendingCount">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- My Profile -->
+                <section id="profile" class="section">
+                    <h2>My Profile</h2>
+                    
+                    <div class="profile-view glass-card" id="profileView">
+                        <div class="profile-avatar" id="profileAvatar">A</div>
+                        <div class="profile-info">
+                            <div class="info-group">
+                                <span class="label">Name</span>
+                                <span class="value" id="viewName">-</span>
+                            </div>
+                            <div class="info-group">
+                                <span class="label">Email</span>
+                                <span class="value" id="viewEmail">-</span>
+                            </div>
+                            <div class="info-group">
+                                <span class="label">Phone</span>
+                                <span class="value" id="viewPhone">-</span>
+                            </div>
+                            <div class="info-group">
+                                <span class="label">Branch</span>
+                                <span class="value" id="viewBranch">-</span>
+                            </div>
+                            <div class="info-group">
+                                <span class="label">CGPA</span>
+                                <span class="value" id="viewCgpa">-</span>
+                            </div>
+                            <div class="info-group">
+                                <span class="label">Resume</span>
+                                <span class="value"><a href="#" id="viewResume" target="_blank">View Resume</a></span>
+                            </div>
+                        </div>
+                        <div class="skills-section">
+                            <h3>Skills</h3>
+                            <div class="skills-container" id="viewSkills">
+                                <!-- Skills populated dynamically -->
+                            </div>
+                        </div>
+                        <button class="btn-primary btn-sm" id="editProfileBtn" style="margin-top: 1.5rem;">Edit Profile</button>
+                    </div>
+
+                    <div class="profile-edit form-card" id="profileEdit" style="display: none;">
+                        <h3>Edit Profile</h3>
+                        <form id="profileForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="editPhone">Phone</label>
+                                    <input type="tel" id="editPhone" class="form-input" placeholder="e.g. 1234567890">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editBranch">Branch</label>
+                                    <select id="editBranch" class="form-select">
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE">CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="ME">ME</option>
+                                        <option value="CE">CE</option>
+                                        <option value="IT">IT</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCgpa">CGPA</label>
+                                    <input type="number" id="editCgpa" class="form-input" step="0.01" min="0" max="10" placeholder="e.g. 8.5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editResume">Resume URL</label>
+                                    <input type="url" id="editResume" class="form-input" placeholder="https://...">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="editSkills">Skills (comma-separated)</label>
+                                    <input type="text" id="editSkills" class="form-input" placeholder="e.g. Java, Python, React">
+                                </div>
+                            </div>
+                            <div class="form-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                                <button type="button" class="btn-primary" id="saveProfileBtn">Save Changes</button>
+                                <button type="button" class="btn-secondary" id="cancelEditBtn">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Available Companies -->
+                <section id="companies" class="section">
+                    <h2>Available Companies</h2>
+                    <div class="company-cards-grid" id="companyList">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <!-- My Applications -->
+                <section id="applications" class="section">
+                    <h2>My Applications</h2>
+                    <div id="applicationListContainer">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <!-- Placement Status -->
+                <section id="status" class="section">
+                    <h2>Placement Status</h2>
+                    <div class="glass-card" id="placementStatusContainer">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Auth check
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || user.role !== "student") {
+            window.location.href = "index.html";
+        }
+
+        // Welcome text
+        document.getElementById("welcome").textContent = "Welcome, " + user.name + "!";
+
+        // Toast function
+        function showToast(message, type = "info") {
+            let container = document.querySelector(".toast-container");
+            if (!container) {
+                container = document.createElement("div");
+                container.className = "toast-container";
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${type}`;
+            const icons = { success: "✓", error: "✕", info: "ℹ" };
+            toast.innerHTML = `<span>${icons[type] || "ℹ"}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add("hiding");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Navigation
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.section');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class
+                navBtns.forEach(b => b.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+
+                // Add active class
+                btn.classList.add('active');
+                const sectionId = btn.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+
+                // Load specific data
+                if (sectionId === 'companies') loadCompanies();
+                if (sectionId === 'applications') loadApplications();
+                if (sectionId === 'status') loadPlacementStatus();
+                if (sectionId === 'profile') loadProfile();
+
+                // Close sidebar on mobile
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('open');
+            });
+        });
+
+        // Hamburger toggle
+        hamburgerBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('open');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
+        });
+
+        // Fetch wrapper for JSON responses
+        async function fetchJson(url, options = {}) {
+            try {
+                const response = await fetch(url, options);
+                if (response.status === 204) return null;
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'An error occurred');
+                }
+                return data;
+            } catch (err) {
+                console.error(err);
+                throw err;
+            }
+        }
+
+        // Load Dashboard Stats
+        async function loadDashboardStats() {
+            try {
+                const companies = await fetchJson('/api/companies');
+                document.getElementById('companyCount').textContent = companies.length || 0;
+
+                const applications = await fetchJson(`/api/companies/applications/${user.id}`);
+                
+                let selected = 0;
+                let pending = 0;
+
+                if (Array.isArray(applications)) {
+                    document.getElementById('applicationCount').textContent = applications.length;
+                    
+                    applications.forEach(app => {
+                        if (app.status === 'Selected') selected++;
+                        if (app.status === 'Applied' || app.status === 'Shortlisted') pending++;
+                    });
+                } else {
+                    document.getElementById('applicationCount').textContent = '0';
+                }
+
+                document.getElementById('selectedCount').textContent = selected;
+                document.getElementById('pendingCount').textContent = pending;
+
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Profile Management
+        const profileView = document.getElementById('profileView');
+        const profileEdit = document.getElementById('profileEdit');
+
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            profileView.style.display = 'none';
+            profileEdit.style.display = 'block';
+            
+            // Populate form
+            document.getElementById('editPhone').value = user.phone || '';
+            document.getElementById('editBranch').value = user.branch || '';
+            document.getElementById('editCgpa').value = user.cgpa || '';
+            document.getElementById('editResume').value = user.resume || '';
+            document.getElementById('editSkills').value = (user.skills || []).join(', ');
+        });
+
+        document.getElementById('cancelEditBtn').addEventListener('click', () => {
+            profileEdit.style.display = 'none';
+            profileView.style.display = 'block';
+        });
+
+        document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+            const phone = document.getElementById('editPhone').value.trim();
+            const branch = document.getElementById('editBranch').value;
+            const cgpa = parseFloat(document.getElementById('editCgpa').value);
+            const resume = document.getElementById('editResume').value.trim();
+            const skillsStr = document.getElementById('editSkills').value;
+            const skills = skillsStr ? skillsStr.split(',').map(s => s.trim()).filter(s => s) : [];
+
+            const updateData = { phone, branch, cgpa, resume, skills };
+
+            try {
+                const updatedUser = await fetchJson(`/api/auth/profile/${user.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updateData)
+                });
+
+                // Update localStorage
+                Object.assign(user, updateData);
+                localStorage.setItem('user', JSON.stringify(user));
+
+                showToast("Profile updated", "success");
+                loadProfile(); // Reloads view and switches UI
+            } catch (error) {
+                showToast(error.message || "Failed to update profile", "error");
+            }
+        });
+
+        async function loadProfile() {
+            try {
+                // Fetch latest to be safe, but can also just use localStorage
+                const profileData = await fetchJson(`/api/auth/profile/${user.id}`);
+                // Merge in case API returns partial
+                Object.assign(user, profileData);
+                localStorage.setItem('user', JSON.stringify(user));
+            } catch (e) {
+                console.error('Could not fetch latest profile', e);
+            }
+
+            document.getElementById('profileAvatar').textContent = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+            document.getElementById('viewName').textContent = user.name || '-';
+            document.getElementById('viewEmail').textContent = user.email || '-';
+            document.getElementById('viewPhone').textContent = user.phone || '-';
+            document.getElementById('viewBranch').textContent = user.branch || '-';
+            document.getElementById('viewCgpa').textContent = user.cgpa || '-';
+            
+            const resumeEl = document.getElementById('viewResume');
+            if (user.resume) {
+                resumeEl.href = user.resume;
+                resumeEl.textContent = 'View Resume';
+                resumeEl.style.display = 'inline';
+            } else {
+                resumeEl.style.display = 'none';
+                resumeEl.parentNode.appendChild(document.createTextNode('-'));
+            }
+
+            const skillsContainer = document.getElementById('viewSkills');
+            skillsContainer.innerHTML = '';
+            if (user.skills && user.skills.length > 0) {
+                user.skills.forEach(skill => {
+                    const span = document.createElement('span');
+                    span.className = 'skill-tag';
+                    span.textContent = skill;
+                    skillsContainer.appendChild(span);
+                });
+            } else {
+                skillsContainer.textContent = 'No skills added yet.';
+            }
+
+            profileEdit.style.display = 'none';
+            profileView.style.display = 'block';
+        }
+
+        // Load Companies
+        async function loadCompanies() {
+            try {
+                const [companies, applications] = await Promise.all([
+                    fetchJson('/api/companies'),
+                    fetchJson(`/api/companies/applications/${user.id}`).catch(() => [])
+                ]);
+
+                const appliedCompanyIds = new Set((applications || []).map(app => app.company ? (app.company._id || app.company) : null));
+                const companyList = document.getElementById('companyList');
+                companyList.innerHTML = '';
+
+                if (!companies || companies.length === 0) {
+                    companyList.innerHTML = '<p>No companies available at the moment.</p>';
+                    return;
+                }
+
+                companies.forEach(company => {
+                    const isApplied = appliedCompanyIds.has(company._id);
+                    const card = document.createElement('div');
+                    card.className = 'company-card';
+                    card.innerHTML = `
+                        <h3>${company.name}</h3>
+                        <div class="detail"><span class="label">Role:</span> <span>${company.role || 'N/A'}</span></div>
+                        <div class="detail"><span class="label">Eligibility:</span> <span>${company.eligibility || 'N/A'}</span></div>
+                        <div class="detail"><span class="label">Location:</span> <span>${company.location || 'N/A'}</span></div>
+                        <div class="detail"><span class="label">Package:</span> <span>${company.package || 'N/A'}</span></div>
+                        <div class="actions" style="margin-top: 1rem;">
+                            <button class="btn-primary btn-sm apply-btn" data-id="${company._id}" ${isApplied ? 'disabled' : ''}>
+                                ${isApplied ? '✓ Applied' : 'Apply Now'}
+                            </button>
+                        </div>
+                    `;
+                    companyList.appendChild(card);
+                });
+
+                document.querySelectorAll('.apply-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const companyId = e.target.getAttribute('data-id');
+                        applyToCompany(companyId);
+                    });
+                });
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('companyList').innerHTML = '<p>Error loading companies.</p>';
+            }
+        }
+
+        async function applyToCompany(companyId) {
+            try {
+                await fetchJson(`/api/companies/${companyId}/apply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId: user.id })
+                });
+                showToast("Applied!", "success");
+                loadCompanies();
+                loadDashboardStats();
+            } catch (error) {
+                showToast(error.message || "Failed to apply", "error");
+            }
+        }
+
+        // Load Applications
+        async function loadApplications() {
+            try {
+                const applications = await fetchJson(`/api/companies/applications/${user.id}`);
+                const container = document.getElementById('applicationListContainer');
+                container.innerHTML = '';
+
+                if (!applications || applications.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="text-align:center; padding: 3rem;">
+                            <div class="empty-icon" style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                            <p>No applications yet</p>
+                        </div>
+                    `;
+                    document.getElementById('applicationCount').textContent = '0';
+                    return;
+                }
+
+                document.getElementById('applicationCount').textContent = applications.length;
+
+                const card = document.createElement('div');
+                card.className = 'glass-card';
+                card.style.overflowX = 'auto';
+
+                let tbodyHtml = '';
+                applications.forEach(app => {
+                    const statusClass = `badge badge-${app.status.toLowerCase()}`;
+                    const dateStr = app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'N/A';
+                    tbodyHtml += `
+                        <tr>
+                            <td>${app.company ? app.company.name : 'Unknown'}</td>
+                            <td>${app.company ? app.company.role : 'N/A'}</td>
+                            <td>${app.company ? app.company.package : 'N/A'}</td>
+                            <td><span class="${statusClass}">${app.status}</span></td>
+                            <td>${dateStr}</td>
+                        </tr>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <table class="data-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 1rem; border-bottom: 1px solid #eee;">Company</th>
+                                <th style="padding: 1rem; border-bottom: 1px solid #eee;">Role</th>
+                                <th style="padding: 1rem; border-bottom: 1px solid #eee;">Package</th>
+                                <th style="padding: 1rem; border-bottom: 1px solid #eee;">Status</th>
+                                <th style="padding: 1rem; border-bottom: 1px solid #eee;">Applied Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tbodyHtml}
+                        </tbody>
+                    </table>
+                `;
+                container.appendChild(card);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('applicationListContainer').innerHTML = '<p>Error loading applications.</p>';
+            }
+        }
+
+        // Load Placement Status
+        async function loadPlacementStatus() {
+            try {
+                const applications = await fetchJson(`/api/companies/applications/${user.id}`);
+                const container = document.getElementById('placementStatusContainer');
+                
+                let selectedApp = null;
+                if (applications && applications.length > 0) {
+                    selectedApp = applications.find(app => app.status === 'Selected');
+                }
+
+                if (selectedApp) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <h3 style="color: var(--success-color, #22c55e); font-size: 1.5rem; margin-bottom: 1rem;">🎉 Congratulations!</h3>
+                            <p style="font-size: 1.1rem;">You have been selected at <strong>${selectedApp.company ? selectedApp.company.name : 'a company'}</strong> for the role of <strong>${selectedApp.company ? selectedApp.company.role : 'N/A'}</strong>.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <h3 style="margin-bottom: 1rem; color: #555;">Not Yet Placed</h3>
+                            <p>Keep improving your skills and applying to companies. Your time will come!</p>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('placementStatusContainer').innerHTML = '<p>Error loading placement status.</p>';
+            }
+        }
+
+        // Initialize
+        loadDashboardStats();
+
+    </script>
+</body>
+</html>

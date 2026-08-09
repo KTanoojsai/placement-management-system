@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — Placement Management System</title>
+    <meta name="description" content="Register for the Placement Management System as a student or placement officer.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">🎓</div>
+            <h1>Create Account</h1>
+            <p>Join the placement portal</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" class="form-input" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Create a password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Register As</label>
+                <select id="role" class="form-select" required>
+                    <option value="">— Select Role —</option>
+                    <option value="student">Student</option>
+                    <option value="admin">Placement Officer</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary">Create Account</button>
+
+            <p id="message" style="text-align:center;margin-top:16px;font-weight:600;"></p>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="index.html">Sign In</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
+    const message = document.getElementById("message");
+
+    try {
+        const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password, role })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            message.style.color = "#10b981";
+            message.textContent = "✓ Registration successful! Redirecting...";
+            setTimeout(() => { window.location.href = "index.html"; }, 1500);
+        } else {
+            message.style.color = "#ef4444";
+            message.textContent = data.message || "Registration failed.";
+        }
+    } catch (error) {
+        console.error(error);
+        message.style.color = "#ef4444";
+        message.textContent = "Cannot connect to server.";
+    }
+});
+</script>
+
+</body>
+</html>
