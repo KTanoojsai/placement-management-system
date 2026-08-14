@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard — Placement Portal</title>
     <meta name="description" content="Student placement dashboard - view companies, apply for jobs, track applications, and manage your profile.">
+    <script>
+        if (window.location.protocol === "file:") {
+            window.location.replace("http://localhost:5000/student-dashboard.html");
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -41,12 +46,31 @@
 
         <main class="main-content">
             <div class="content-header">
-                <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Sidebar">
-                    ☰
-                </button>
-                <div>
-                    <h1 id="welcome">Welcome!</h1>
-                    <p>Track your placement journey</p>
+                <div class="header-left">
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Sidebar">
+                        ☰
+                    </button>
+                    <div>
+                        <h1 id="welcome">Welcome!</h1>
+                        <p>Track your placement journey</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="notification-container">
+                        <button class="notification-bell" id="notificationBell" aria-label="Notifications">
+                            🔔
+                            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="dropdown-header">
+                                <h3>Notifications</h3>
+                                <button class="btn-text" id="markAllReadBtn">Mark all as read</button>
+                            </div>
+                            <div class="dropdown-body" id="notificationList">
+                                <div class="notification-empty">No notifications yet</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -188,6 +212,8 @@
     </div>
 
     <script>
+        const API_BASE_URL = window.location.protocol === "file:" ? "http://localhost:5000" : "";
+
         // Auth check
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || user.role !== "student") {
@@ -266,7 +292,8 @@
         // Fetch wrapper for JSON responses
         async function fetchJson(url, options = {}) {
             try {
-                const response = await fetch(url, options);
+                const requestUrl = url.startsWith("/") ? `${API_BASE_URL}${url}` : url;
+                const response = await fetch(requestUrl, options);
                 if (response.status === 204) return null;
                 const data = await response.json();
                 if (!response.ok) {
@@ -562,8 +589,132 @@
             }
         }
 
+        // Notifications System
+        const notificationBell = document.getElementById("notificationBell");
+        const notificationDropdown = document.getElementById("notificationDropdown");
+        const notificationBadge = document.getElementById("notificationBadge");
+        const notificationList = document.getElementById("notificationList");
+        const markAllReadBtn = document.getElementById("markAllReadBtn");
+
+        // Toggle dropdown
+        notificationBell.addEventListener("click", (e) => {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle("open");
+            if (notificationDropdown.classList.contains("open")) {
+                loadNotifications();
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", () => {
+            notificationDropdown.classList.remove("open");
+        });
+
+        notificationDropdown.addEventListener("click", (e) => {
+            e.stopPropagation();
+        });
+
+        // Fetch and render notifications
+        async function loadNotifications() {
+            try {
+                const notifications = await fetchJson(`/api/notifications/${user.id}/${user.role}`);
+                renderNotifications(notifications);
+            } catch (error) {
+                console.error("Failed to load notifications:", error);
+            }
+        }
+
+        // Render notifications in UI
+        function renderNotifications(notifications) {
+            notificationList.innerHTML = "";
+            let unreadCount = 0;
+
+            if (!notifications || notifications.length === 0) {
+                notificationList.innerHTML = `<div class="notification-empty">No notifications yet</div>`;
+                notificationBadge.style.display = "none";
+                return;
+            }
+
+            notifications.forEach(notif => {
+                if (!notif.read) unreadCount++;
+
+                const notifEl = document.createElement("div");
+                notifEl.className = `notification-item ${notif.read ? "" : "unread"}`;
+                
+                const timeString = formatTime(new Date(notif.createdAt));
+
+                notifEl.innerHTML = `
+                    <div class="notification-item-title">${notif.title}</div>
+                    <div class="notification-item-desc">${notif.message}</div>
+                    <div class="notification-item-time">${timeString}</div>
+                `;
+
+                // Mark single notification as read on click
+                if (!notif.read) {
+                    notifEl.addEventListener("click", async () => {
+                        try {
+                            await fetchJson(`/api/notifications/${notif._id}/read`, {
+                                method: "PUT",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ userId: user.id })
+                            });
+                            loadNotifications();
+                            loadDashboardStats(); // Refresh stats if status changed
+                        } catch (error) {
+                            console.error("Failed to mark notification as read:", error);
+                        }
+                    });
+                }
+
+                notificationList.appendChild(notifEl);
+            });
+
+            if (unreadCount > 0) {
+                notificationBadge.textContent = unreadCount;
+                notificationBadge.style.display = "block";
+            } else {
+                notificationBadge.style.display = "none";
+            }
+        }
+
+        // Mark all notifications as read
+        markAllReadBtn.addEventListener("click", async () => {
+            try {
+                await fetchJson("/api/notifications/read-all", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id, role: user.role })
+                });
+                loadNotifications();
+            } catch (error) {
+                console.error("Failed to mark all notifications as read:", error);
+            }
+        });
+
+        // Time helper
+        function formatTime(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffMins < 1) return "Just now";
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays === 1) return "Yesterday";
+            return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        }
+
+        // Auto polling (every 10 seconds)
+        function startNotificationPolling() {
+            loadNotifications();
+            setInterval(loadNotifications, 10000);
+        }
+
         // Initialize
         loadDashboardStats();
+        startNotificationPolling();
 
     </script>
 </body>

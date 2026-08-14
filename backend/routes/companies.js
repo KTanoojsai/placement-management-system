@@ -1,6 +1,8 @@
 const express = require("express");
 const Company = require("../models/Company");
 const Application = require("../models/Application");
+const Notification = require("../models/Notification");
+const User = require("../models/User");
 
 const router = express.Router();
 
@@ -21,6 +23,14 @@ router.post("/", async (req, res) => {
     try {
         const company = new Company(req.body);
         await company.save();
+
+        // Trigger notification for all students
+        const notification = new Notification({
+            recipientRole: "student",
+            title: "New Job Opportunity",
+            message: `New job posted: ${company.role} at ${company.name}. Package: ${company.package}.`
+        });
+        await notification.save();
 
         res.status(201).json({
             message: "Company added successfully",
@@ -73,6 +83,22 @@ router.post("/:companyId/apply", async (req, res) => {
         });
 
         await application.save();
+
+        // Trigger notification for placement officer (admin)
+        try {
+            const student = await User.findById(studentId);
+            const company = await Company.findById(req.params.companyId);
+            if (student && company) {
+                const notification = new Notification({
+                    recipientRole: "admin",
+                    title: "New Application Received",
+                    message: `${student.name} has applied for the position of ${company.role} at ${company.name}.`
+                });
+                await notification.save();
+            }
+        } catch (notifErr) {
+            console.error("Failed to trigger application notification:", notifErr);
+        }
 
         res.status(201).json({
             message: "Application submitted successfully"
@@ -140,6 +166,22 @@ router.put("/applications/:applicationId/status", async (req, res) => {
             return res.status(404).json({
                 message: "Application not found"
             });
+        }
+
+        // Trigger notification for student
+        try {
+            let displayStatus = status;
+            if (status === "Selected") {
+                displayStatus = "Hired";
+            }
+            const notification = new Notification({
+                recipient: application.student._id,
+                title: "Application Status Update",
+                message: `Your application for ${application.company.role} at ${application.company.name} has been ${displayStatus.toLowerCase()}.`
+            });
+            await notification.save();
+        } catch (notifErr) {
+            console.error("Failed to trigger status update notification:", notifErr);
         }
 
         res.json({

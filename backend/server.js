@@ -12,6 +12,7 @@ dns.setServers(["8.8.8.8", "1.1.1.1"]);
 const authRoutes = require("./routes/auth");
 const companyRoutes = require("./routes/companies");
 const studentRoutes = require("./routes/students");
+const notificationRoutes = require("./routes/notifications");
 
 const app = express();
 const frontendPath = path.join(__dirname, "..", "frontend");
@@ -35,14 +36,20 @@ app.use("/api/companies", companyRoutes);
 // Student routes
 app.use("/api/students", studentRoutes);
 
+// Notification routes
+app.use("/api/notifications", notificationRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+// Start the API first so frontend requests can reach the server even if Atlas is unavailable.
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("MongoDB Connected Successfully");
-
-        app.listen(process.env.PORT || 5000, () => {
-            console.log("Server running on http://localhost:5000");
-        });
     })
     .catch((error) => {
         console.log("MongoDB Connection Error:", error.message);

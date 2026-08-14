@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "http-server -p 3000 -c-1"
+    "start": "http-server -p 4173 -c-1",
+    "dev": "http-server -p 4173 -c-1"
   },
   "devDependencies": {
     "http-server": "^14.1.1"

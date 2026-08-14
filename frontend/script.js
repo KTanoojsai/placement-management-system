@@ -21,6 +21,8 @@ function showToast(message, type = "info") {
     }, 3000);
 }
 
+const API_BASE_URL = window.location.protocol === "file:" ? "http://localhost:5000" : "";
+
 // Login form handler
 document.getElementById("loginForm").addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -37,7 +39,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     }
 
     try {
-        const response = await fetch("/api/auth/login", {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password, role })
@@ -70,3 +72,15 @@ document.getElementById("loginForm").addEventListener("submit", async function (
         message.textContent = "Cannot connect to server.";
     }
 });
+
+// Toggle Password Visibility
+const passwordInput = document.getElementById("password");
+const passwordToggle = document.getElementById("passwordToggle");
+
+if (passwordInput && passwordToggle) {
+    passwordToggle.addEventListener("click", () => {
+        const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+        passwordInput.setAttribute("type", type);
+        passwordToggle.textContent = type === "password" ? "👁️" : "🙈";
+    });
+}
