@@ -241,7 +241,9 @@ function addHoverLiftEffect(element) {
     });
 }
 
-const API_BASE_URL = "https://placement-management-backend-x5mq.onrender.com";
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : "https://placement-management-backend-x5mq.onrender.com";
 
 // Login form handler
 document.getElementById("loginForm").addEventListener("submit", async function (event) {
@@ -274,12 +276,21 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             triggerConfetti();
 
             localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("token", data.token); // Store JWT securely
 
             setTimeout(() => {
-                if (role === "student") {
+                const normRole = role.toUpperCase();
+                if (normRole === "STUDENT") {
                     window.location.href = "student-dashboard.html";
-                } else {
+                } else if (normRole === "PLACEMENT_OFFICER") {
                     window.location.href = "admin-dashboard.html";
+                } else if (normRole === "RECRUITER") {
+                    window.location.href = "recruiter-dashboard.html";
+                } else if (normRole === "SUPER_ADMIN") {
+                    window.location.href = "super-admin-dashboard.html";
+                } else {
+                    // Fallback for any old mappings
+                    window.location.href = "index.html";
                 }
             }, 1500);
 

@@ -48,9 +48,16 @@
                 <label for="role">Register As</label>
                 <select id="role" class="form-select" required>
                     <option value="">— Select Role —</option>
-                    <option value="student">Student</option>
-                    <option value="admin">Placement Officer</option>
+                    <option value="STUDENT-ORGANIZATION">College Student</option>
+                    <option value="STUDENT-INDIVIDUAL">Individual Student</option>
+                    <option value="PLACEMENT_OFFICER-ORGANIZATION">College Placement Officer</option>
+                    <option value="RECRUITER-INDIVIDUAL">Public Recruiter</option>
                 </select>
+            </div>
+
+            <div class="form-group" id="orgCodeGroup" style="display: none;">
+                <label for="organizationCode">Organization Code</label>
+                <input type="text" id="organizationCode" class="form-input" placeholder="e.g. SVEC-2026-X7K9">
             </div>
 
             <button type="submit" class="btn-primary">Create Account</button>
@@ -65,7 +72,25 @@
 </div>
 
 <script>
-const API_BASE_URL =  "https://placement-management-backend-x5mq.onrender.com";
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : "https://placement-management-backend-x5mq.onrender.com";
+
+// Toggle Organization Code Input Visibility
+document.getElementById("role").addEventListener("change", function() {
+    const roleVal = this.value;
+    const orgCodeGroup = document.getElementById("orgCodeGroup");
+    const organizationCodeInput = document.getElementById("organizationCode");
+    
+    if (roleVal.endsWith("-ORGANIZATION")) {
+        orgCodeGroup.style.display = "block";
+        organizationCodeInput.setAttribute("required", "required");
+    } else {
+        orgCodeGroup.style.display = "none";
+        organizationCodeInput.removeAttribute("required");
+        organizationCodeInput.value = "";
+    }
+});
 
 document.getElementById("registerForm").addEventListener("submit", async function(event) {
     event.preventDefault();
@@ -73,22 +98,49 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    const role = document.getElementById("role").value;
+    const roleVal = document.getElementById("role").value;
     const message = document.getElementById("message");
+
+    if (!roleVal) {
+        message.style.color = "#ef4444";
+        message.textContent = "Please select a role.";
+        return;
+    }
+
+    const [role, accountType] = roleVal.split("-");
+    const organizationCode = document.getElementById("organizationCode").value.trim();
 
     try {
         const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password, role })
+            body: JSON.stringify({ name, email, password, role, accountType, organizationCode })
         });
 
         const data = await response.json();
 
         if (response.ok) {
             message.style.color = "#10b981";
-            message.textContent = "✓ Registration successful! Redirecting...";
-            setTimeout(() => { window.location.href = "index.html"; }, 1500);
+            message.textContent = "✓ Registration successful! Logging in...";
+            
+            // Save token and user details to localStorage for automatic login
+            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("token", data.token);
+
+            setTimeout(() => {
+                const normRole = role.toUpperCase();
+                if (normRole === "STUDENT") {
+                    window.location.href = "student-dashboard.html";
+                } else if (normRole === "PLACEMENT_OFFICER") {
+                    window.location.href = "admin-dashboard.html";
+                } else if (normRole === "RECRUITER") {
+                    window.location.href = "recruiter-dashboard.html";
+                } else if (normRole === "SUPER_ADMIN") {
+                    window.location.href = "super-admin-dashboard.html";
+                } else {
+                    window.location.href = "index.html";
+                }
+            }, 1500);
         } else {
             message.style.color = "#ef4444";
             message.textContent = data.message || "Registration failed.";

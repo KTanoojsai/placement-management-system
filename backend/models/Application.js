@@ -7,17 +7,20 @@ const applicationSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
-
         company: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Company",
             required: true
         },
-
         status: {
             type: String,
             enum: ["Applied", "Shortlisted", "Selected", "Rejected"],
             default: "Applied"
+        },
+        organizationId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Organization",
+            default: null
         }
     },
     {

@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ["student", "admin"],
+            enum: ["student", "admin", "SUPER_ADMIN", "PLACEMENT_OFFICER", "STUDENT", "RECRUITER"],
             required: true
         },
         phone: {
@@ -36,9 +36,31 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: ""
         },
+        linkedin: {
+            type: String,
+            default: ""
+        },
+        github: {
+            type: String,
+            default: ""
+        },
         skills: {
             type: [String],
             default: []
+        },
+        accountType: {
+            type: String,
+            enum: ["ORGANIZATION", "INDIVIDUAL"],
+            default: "INDIVIDUAL"
+        },
+        organizationId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Organization",
+            default: null
+        },
+        isActive: {
+            type: Boolean,
+            default: true
         }
     },
     {

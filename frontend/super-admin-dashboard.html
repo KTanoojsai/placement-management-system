@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard — Placement Portal</title>
+    <meta name="description" content="Super Admin dashboard - manage organizations, users, and platform settings.">
+    <script>
+        if (window.location.protocol === "file:") {
+            window.location.replace("http://localhost:5000/super-admin-dashboard.html");
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Placement Portal</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-section="home">
+                    <span class="icon">🏠</span> Platform Stats
+                </button>
+                <button class="nav-btn" data-section="organizations">
+                    <span class="icon">🏢</span> Organizations
+                </button>
+                <button class="nav-btn" data-section="addOrg">
+                    <span class="icon">➕</span> Create Org
+                </button>
+                <button class="nav-btn" data-section="users">
+                    <span class="icon">👥</span> Users Directory
+                </button>
+            </nav>
+            <button class="logout-btn" onclick="logout()">
+                <span class="icon">🚪</span> Logout
+            </button>
+        </aside>
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <button class="hamburger" id="menuToggle">☰</button>
+                    <div>
+                        <h1 id="welcome">Welcome, Super Admin!</h1>
+                        <p>Global system management and settings.</p>
+                    </div>
+                </div>
+            </header>
+            <div class="content-body">
+                <!-- Home Stats Section -->
+                <section id="home" class="section active">
+                    <h2>Platform Global Statistics</h2>
+                    <div class="cards-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">🏢</div>
+                            <div>
+                                <div class="stat-value" id="statOrgs">0</div>
+                                <div class="stat-label">Organizations</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">👥</div>
+                            <div>
+                                <div class="stat-value" id="statStudents">0</div>
+                                <div class="stat-label">Total Students (Org/Ind)</div>
+                                <small id="statStudentDetail" style="color: #666; font-size: 0.8rem;">0 / 0</small>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon amber">👔</div>
+                            <div>
+                                <div class="stat-value" id="statOfficers">0</div>
+                                <div class="stat-label">Placement Officers</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">💼</div>
+                            <div>
+                                <div class="stat-value" id="statRecruiters">0</div>
+                                <div class="stat-label">Public Recruiters</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 style="margin-top: 2rem;">Organization Performance Summary</h2>
+                    <div class="glass-card" style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="data-table" id="orgSummaryTable">
+                            <thead>
+                                <tr>
+                                    <th>Organization Name</th>
+                                    <th>Registration Code</th>
+                                    <th>Status</th>
+                                    <th>Student Count</th>
+                                    <th>Placement Officers</th>
+                                    <th>Private Jobs</th>
+                                    <th>Applications</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orgSummaryBody">
+                                <!-- Filled dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Manage Organizations Section -->
+                <section id="organizations" class="section">
+                    <h2>Manage Organizations</h2>
+                    <div class="glass-card" style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Organization Name</th>
+                                    <th>Unique Code</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="organizationsTableBody">
+                                <!-- Filled dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Create Organization Section -->
+                <section id="addOrg" class="section">
+                    <h2>Create New Organization</h2>
+                    <div class="form-card">
+                        <h3>Organization Details</h3>
+                        <form id="orgForm">
+                            <div class="form-grid">
+                                <div>
+                                    <label for="orgName">Organization Name</label>
+                                    <input type="text" id="orgName" class="form-input" placeholder="e.g. Sri Vasavi Engineering College" required>
+                                </div>
+                                <div>
+                                    <label for="orgCode">Unique Registration Code</label>
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <input type="text" id="orgCode" class="form-input" placeholder="e.g. SVEC-2026-X7K9" required style="flex: 1; margin-bottom: 0;">
+                                        <button type="button" class="btn-secondary" onclick="generateCode()" style="margin: 0; padding: 0.75rem 1rem; font-size: 0.85rem; height: 100%;">Generate</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="orgStatus">Initial Status</label>
+                                    <select id="orgStatus" class="form-select">
+                                        <option value="ACTIVE">ACTIVE</option>
+                                        <option value="INACTIVE">INACTIVE</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary" style="margin-top: 20px;">Create Organization</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Users Directory Section -->
+                <section id="users" class="section">
+                    <h2>Platform Users Directory</h2>
+                    <div style="margin: 1.5rem 0; display: flex; gap: 1rem; align-items: center;">
+                        <label for="filterOrg" style="font-weight: 500;">Filter by Organization:</label>
+                        <select id="filterOrg" class="form-select" style="max-width: 300px;">
+                            <option value="">— All Organizations —</option>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
+                    <div class="glass-card" style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Account Type</th>
+                                    <th>Organization</th>
+                                    <th>Active Status</th>
+                                    <th>Joined Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Filled dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+            ? "http://localhost:5000"
+            : "https://placement-management-backend-x5mq.onrender.com";
+
+        // Auth check
+        const user = JSON.parse(localStorage.getItem("user"));
+        const token = localStorage.getItem("token");
+        if (!user || !token || !user.role || user.role.toUpperCase() !== "SUPER_ADMIN") {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            window.location.href = "index.html";
+        }
+        if (user && user.name) {
+            document.getElementById("welcome").textContent = "Welcome, " + user.name + " (Super Admin)!";
+        }
+
+        // Toast function
+        function showToast(message, type = "info") {
+            let container = document.querySelector(".toast-container");
+            if (!container) {
+                container = document.createElement("div");
+                container.className = "toast-container";
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${type}`;
+            const icons = { success: "✓", error: "✕", info: "ℹ" };
+            toast.innerHTML = `<span>${icons[type] || "ℹ"}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add("hiding");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Fetch wrapper
+        async function fetchJson(url, options = {}) {
+            try {
+                const authToken = localStorage.getItem("token");
+                const headers = {
+                    "Content-Type": "application/json",
+                    ...(options.headers || {})
+                };
+                if (authToken) {
+                    headers["Authorization"] = `Bearer ${authToken}`;
+                }
+
+                const requestUrl = url.startsWith("/") ? `${API_BASE_URL}${url}` : url;
+                const response = await fetch(requestUrl, {
+                    ...options,
+                    headers
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token");
+                    window.location.href = "index.html";
+                    return null;
+                }
+
+                if (response.status === 204) return null;
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'An error occurred');
+                }
+                return data;
+            } catch (err) {
+                console.error(err);
+                throw err;
+            }
+        }
+
+        // Navigation
+        const navBtns = document.querySelectorAll(".nav-btn");
+        const sections = document.querySelectorAll(".section");
+        const sidebar = document.getElementById("sidebar");
+        const sidebarOverlay = document.getElementById("sidebarOverlay");
+        const menuToggle = document.getElementById("menuToggle");
+
+        navBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const targetSection = btn.getAttribute("data-section");
+
+                navBtns.forEach(b => b.classList.remove("active"));
+                sections.forEach(s => s.classList.remove("active"));
+
+                btn.classList.add("active");
+                document.getElementById(targetSection).classList.add("active");
+
+                if (targetSection === "home") loadStats();
+                if (targetSection === "organizations") loadOrganizations();
+                if (targetSection === "users") loadUsersAndFilters();
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove("open");
+                    sidebarOverlay.classList.remove("open");
+                }
+            });
+        });
+
+        // Hamburger
+        menuToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            sidebarOverlay.classList.toggle("open");
+        });
+
+        sidebarOverlay.addEventListener("click", () => {
+            sidebar.classList.remove("open");
+            sidebarOverlay.classList.remove("open");
+        });
+
+        // Load Stats (Home Tab)
+        async function loadStats() {
+            try {
+                const stats = await fetchJson("/api/admin/stats");
+                if (stats) {
+                    // Global Cards
+                    document.getElementById("statOrgs").textContent = stats.global.totalOrgs;
+                    document.getElementById("statStudents").textContent = stats.global.totalStudents;
+                    document.getElementById("statStudentDetail").textContent = 
+                        `Org: ${stats.global.orgStudents} | Ind: ${stats.global.indStudents}`;
+                    document.getElementById("statOfficers").textContent = stats.global.totalOfficers;
+                    document.getElementById("statRecruiters").textContent = stats.global.totalRecruiters;
+
+                    // Organization performance table
+                    const tbody = document.getElementById("orgSummaryBody");
+                    if (stats.organizations.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>No organizations created yet.</td></tr>";
+                        return;
+                    }
+
+                    tbody.innerHTML = stats.organizations.map(org => {
+                        const statusClass = org.status === "ACTIVE" ? "badge badge-selected" : "badge badge-rejected";
+                        return `
+                            <tr>
+                                <td><strong>${org.name}</strong></td>
+                                <td><code>${org.code}</code></td>
+                                <td><span class="${statusClass}">${org.status}</span></td>
+                                <td>${org.studentCount}</td>
+                                <td>${org.officerCount}</td>
+                                <td>${org.jobCount}</td>
+                                <td>${org.appCount}</td>
+                            </tr>
+                        `;
+                    }).join("");
+                }
+            } catch (err) {
+                console.error("Failed to load stats:", err);
+            }
+        }
+
+        // Load Organizations
+        async function loadOrganizations() {
+            const tbody = document.getElementById("organizationsTableBody");
+            tbody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>Loading...</td></tr>";
+            try {
+                const orgs = await fetchJson("/api/admin/organizations");
+                if (orgs) {
+                    if (orgs.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>No organizations created yet.</td></tr>";
+                        return;
+                    }
+
+                    tbody.innerHTML = orgs.map(org => {
+                        const statusClass = org.status === "ACTIVE" ? "badge badge-selected" : "badge badge-rejected";
+                        const toggleText = org.status === "ACTIVE" ? "Deactivate" : "Activate";
+                        const toggleBtnClass = org.status === "ACTIVE" ? "btn-danger" : "btn-success";
+                        const newStatus = org.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+                        const dateStr = org.createdAt ? new Date(org.createdAt).toLocaleDateString() : "—";
+
+                        return `
+                            <tr>
+                                <td><strong>${org.name}</strong></td>
+                                <td><code>${org.organizationCode}</code></td>
+                                <td><span class="${statusClass}">${org.status}</span></td>
+                                <td>${dateStr}</td>
+                                <td>
+                                    <button class="${toggleBtnClass} btn-sm" onclick="toggleOrgStatus('${org._id}', '${newStatus}')">
+                                        ${toggleText}
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join("");
+                }
+            } catch (err) {
+                tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; color: #ef4444;'>Error loading organizations</td></tr>";
+            }
+        }
+
+        // Toggle Org Status
+        async function toggleOrgStatus(id, newStatus) {
+            try {
+                const res = await fetchJson(`/api/admin/organizations/${id}`, {
+                    method: "PUT",
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (res) {
+                    showToast(`Organization status set to ${newStatus}!`, "success");
+                    loadOrganizations();
+                    loadStats();
+                }
+            } catch (err) {
+                showToast(err.message || "Error updating organization", "error");
+            }
+        }
+
+        // Add Organization Form Handler
+        document.getElementById("orgForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById("orgName").value,
+                organizationCode: document.getElementById("orgCode").value.trim(),
+                status: document.getElementById("orgStatus").value
+            };
+
+            try {
+                const res = await fetchJson("/api/admin/organizations", {
+                    method: "POST",
+                    body: JSON.stringify(data)
+                });
+
+                if (res) {
+                    showToast("Organization created successfully!", "success");
+                    document.getElementById("orgForm").reset();
+                    loadStats();
+                }
+            } catch (err) {
+                showToast(err.message || "Error creating organization", "error");
+            }
+        });
+
+        // Load Users and Filters
+        async function loadUsersAndFilters() {
+            await loadOrgFilterDropdown();
+            await loadUsers();
+        }
+
+        // Load Org Filter Dropdown
+        async function loadOrgFilterDropdown() {
+            const select = document.getElementById("filterOrg");
+            const currentValue = select.value;
+            try {
+                const orgs = await fetchJson("/api/admin/organizations");
+                if (orgs) {
+                    select.innerHTML = '<option value="">— All Organizations —</option>' + 
+                        orgs.map(o => `<option value="${o._id}">${o.name} (${o.organizationCode})</option>`).join("");
+                    select.value = currentValue;
+                }
+            } catch (err) {
+                console.error("Error loading filter dropdown:", err);
+            }
+        }
+
+        // Load Users Directory
+        async function loadUsers() {
+            const tbody = document.getElementById("usersTableBody");
+            const filterOrg = document.getElementById("filterOrg").value;
+            tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Loading...</td></tr>";
+
+            try {
+                let url = "/api/admin/users";
+                if (filterOrg) {
+                    url += `?organizationId=${filterOrg}`;
+                }
+
+                const users = await fetchJson(url);
+                if (users) {
+                    if (users.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>No users found.</td></tr>";
+                        return;
+                    }
+
+                    tbody.innerHTML = users.map(u => {
+                        const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—";
+                        const orgName = u.organizationId ? u.organizationId.name : "—";
+                        const activeClass = u.isActive ? "badge badge-selected" : "badge badge-rejected";
+                        const activeLabel = u.isActive ? "Active" : "Deactivated";
+
+                        return `
+                            <tr>
+                                <td><strong>${u.name}</strong></td>
+                                <td>${u.email}</td>
+                                <td><span class="badge ${u.role === 'SUPER_ADMIN' ? 'badge-selected' : u.role === 'PLACEMENT_OFFICER' ? 'badge-applied' : u.role === 'RECRUITER' ? 'badge-shortlisted' : 'badge-rejected'}">${u.role}</span></td>
+                                <td>${u.accountType}</td>
+                                <td>${orgName}</td>
+                                <td><span class="${activeClass}">${activeLabel}</span></td>
+                                <td>${dateStr}</td>
+                            </tr>
+                        `;
+                    }).join("");
+                }
+            } catch (err) {
+                tbody.innerHTML = "<tr><td colspan='7' style='text-align: center; color: #ef4444;'>Error loading users</td></tr>";
+            }
+        }
+
+        // Hook up filter dropdown change listener
+        document.getElementById("filterOrg").addEventListener("change", loadUsers);
+
+        // Logout
+        function logout() {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            window.location.href = "index.html";
+        }
+
+        // Generate organization registration code
+        function generateCode() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let randomPart = "";
+            for (let i = 0; i < 6; i++) {
+                randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const nameInput = document.getElementById("orgName").value;
+            let prefix = "ORG";
+            if (nameInput) {
+                // Generate initials
+                prefix = nameInput.split(" ").map(w => w.charAt(0)).join("").toUpperCase().replace(/[^A-Z]/g, "");
+                if (prefix.length < 2) prefix = nameInput.substring(0, 3).toUpperCase();
+            }
+            const year = new Date().getFullYear();
+            document.getElementById("orgCode").value = `${prefix}-${year}-${randomPart}`;
+        }
+
+        // Initialize Stats
+        document.addEventListener("DOMContentLoaded", loadStats);
+    </script>
+</body>
+</html>

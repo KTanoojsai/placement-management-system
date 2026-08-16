@@ -9,7 +9,12 @@ const notificationSchema = new mongoose.Schema(
         },
         recipientRole: {
             type: String,
-            enum: ["student", "admin"],
+            enum: ["student", "admin", "SUPER_ADMIN", "PLACEMENT_OFFICER", "STUDENT", "RECRUITER"],
+            default: null
+        },
+        organizationId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Organization",
             default: null
         },
         title: {

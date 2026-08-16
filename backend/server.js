@@ -13,6 +13,7 @@ const authRoutes = require("./routes/auth");
 const companyRoutes = require("./routes/companies");
 const studentRoutes = require("./routes/students");
 const notificationRoutes = require("./routes/notifications");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 const frontendPath = path.join(__dirname, "..", "frontend");
@@ -21,6 +22,7 @@ const frontendPath = path.join(__dirname, "..", "frontend");
 app.use(cors());
 app.use(express.json());
 app.use(express.static(frontendPath));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Home route
 app.get("/", (req, res) => {
@@ -38,6 +40,9 @@ app.use("/api/students", studentRoutes);
 
 // Notification routes
 app.use("/api/notifications", notificationRoutes);
+
+// Super Admin routes
+app.use("/api/admin", adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 
