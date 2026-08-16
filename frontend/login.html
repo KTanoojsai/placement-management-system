@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindURJob — Login</title>
+    <meta name="description" content="Login to FindURJob to access student and admin dashboards.">
+    <script>
+        if (window.location.protocol === "file:") {
+            window.location.replace("http://localhost:5000/login.html");
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">🎓</div>
+            <h1>Welcome Back</h1>
+            <p>Sign in to FindURJob</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="role">Select Role</label>
+                <select id="role" class="form-select" required>
+                    <option value="">— Choose your role —</option>
+                    <option value="STUDENT">Student</option>
+                    <option value="PLACEMENT_OFFICER">Placement Officer</option>
+                    <option value="RECRUITER">Public Recruiter</option>
+                    <option value="SUPER_ADMIN">Super Admin</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">👁️</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary">Sign In</button>
+
+            <p id="message" style="text-align:center;margin-top:16px;font-weight:600;"></p>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="register.html">Create Account</a></p>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

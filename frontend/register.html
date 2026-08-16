@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account — Placement Management System</title>
-    <meta name="description" content="Register for the Placement Management System as a student or placement officer.">
+    <title>Create Account — FindURJob</title>
+    <meta name="description" content="Register for FindURJob as a student or placement officer.">
     <script>
         if (window.location.protocol === "file:") {
             window.location.replace("http://localhost:5000/register.html");
@@ -22,7 +22,7 @@
         <div class="auth-header">
             <div class="logo">🎓</div>
             <h1>Create Account</h1>
-            <p>Join the placement portal</p>
+            <p>Join FindURJob</p>
         </div>
 
         <form id="registerForm">
@@ -66,7 +66,7 @@
         </form>
 
         <div class="auth-footer">
-            <p>Already have an account? <a href="index.html">Sign In</a></p>
+            <p>Already have an account? <a href="login.html">Sign In</a></p>
         </div>
     </div>
 </div>
@@ -138,7 +138,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
                 } else if (normRole === "SUPER_ADMIN") {
                     window.location.href = "super-admin-dashboard.html";
                 } else {
-                    window.location.href = "index.html";
+                    window.location.href = "login.html";
                 }
             }, 1500);
         } else {

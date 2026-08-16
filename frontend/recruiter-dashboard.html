@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recruiter Dashboard — Placement Portal</title>
+    <title>Recruiter Dashboard — FindURJob</title>
     <meta name="description" content="Recruiter dashboard - manage job posts and process student applications.">
     <script>
         if (window.location.protocol === "file:") {
@@ -20,7 +20,7 @@
     <div class="dashboard">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>Placement Portal</h2>
+                <h2>FindURJob</h2>
             </div>
             <nav class="sidebar-nav">
                 <button class="nav-btn active" data-section="home">
@@ -163,7 +163,7 @@
         if (!user || !token || !user.role || user.role.toUpperCase() !== "RECRUITER") {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
         if (user && user.name) {
             document.getElementById("welcome").textContent = "Welcome, " + user.name + "!";
@@ -209,7 +209,7 @@
                 if (response.status === 401 || response.status === 403) {
                     localStorage.removeItem("user");
                     localStorage.removeItem("token");
-                    window.location.href = "index.html";
+                    window.location.href = "login.html";
                     return null;
                 }
 
@@ -460,7 +460,7 @@
         function logout() {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
 
         // Notifications

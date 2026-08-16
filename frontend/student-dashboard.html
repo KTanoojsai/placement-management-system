@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard — Placement Portal</title>
+    <title>Student Dashboard — FindURJob</title>
     <meta name="description" content="Student placement dashboard - view companies, apply for jobs, track applications, and manage your profile.">
     <script>
         if (window.location.protocol === "file:") {
@@ -20,7 +20,7 @@
     <div class="dashboard">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>Placement Portal</h2>
+                <h2>FindURJob</h2>
             </div>
             <nav class="sidebar-nav">
                 <button class="nav-btn active" data-section="home">
@@ -253,7 +253,7 @@
         if (!user || !token || !user.role || user.role.toUpperCase() !== "STUDENT") {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
 
         // Welcome text
@@ -324,7 +324,7 @@
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', () => {
             localStorage.removeItem("user");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         });
 
         // Fetch wrapper for JSON responses
@@ -560,8 +560,8 @@
                 if (response.status === 401 || response.status === 403) {
                     localStorage.removeItem("user");
                     localStorage.removeItem("token");
-                    window.location.href = "index.html";
-                    return;
+                    window.location.href = "login.html";
+                    return null;
                 }
 
                 const data = await response.json();

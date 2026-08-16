@@ -3,65 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placement Management System — Login</title>
-    <meta name="description" content="Login to the Placement Management System to access student and admin dashboards.">
-    <script>
-        if (window.location.protocol === "file:") {
-            window.location.replace("http://localhost:5000/index.html");
-        }
-    </script>
+    <title>FindURJob — Next-Gen Placement & Recruitment Platform</title>
+    <meta name="description" content="Next-Gen recruitment platform supporting multi-organization college portals and public recruiter job boards.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .landing-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #3f2a14;
+        }
+        .landing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(140, 91, 43, 0.1);
+        }
+        .landing-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8c5b2b;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .nav-login-link {
+            color: #8c5b2b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+        .nav-login-link:hover {
+            opacity: 0.8;
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 7rem 0 5rem 0;
+            gap: 2rem;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #3f2a14;
+            max-width: 800px;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #6d543b;
+            max-width: 750px;
+            line-height: 1.7;
+        }
+        .developer-section {
+            border-top: 1px solid rgba(140, 91, 43, 0.1);
+            padding: 4rem 0;
+            margin-top: 6rem;
+            text-align: center;
+        }
+        .developer-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #3f2a14;
+        }
+        .developer-section p {
+            color: #6d543b;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        .developer-names-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            min-height: 50px;
+        }
+        .developer-card {
+            background: #fff;
+            border: 1px solid rgba(140, 91, 43, 0.15);
+            border-radius: 16px;
+            padding: 1.75rem 1.5rem;
+            width: 260px;
+            box-shadow: 0 4px 6px rgba(140, 91, 43, 0.02);
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .developer-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(140, 91, 43, 0.06);
+        }
+        .developer-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #3f2a14;
+            font-weight: 700;
+        }
+        .developer-card .dev-role {
+            font-size: 0.85rem;
+            color: #8c5b2b;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .developer-card .dev-roll {
+            font-size: 0.8rem;
+            color: #a0856c;
+        }
+        .footer-bottom {
+            margin-top: 4rem;
+            font-size: 0.85rem;
+            color: #a0856c;
+        }
+    </style>
 </head>
-<body>
+<body style="background: #fdfaf7;">
 
-<div class="auth-page">
-    <div class="auth-card">
-        <div class="auth-header">
-            <div class="logo">🎓</div>
-            <h1>Welcome Back</h1>
-            <p>Sign in to your placement portal</p>
+<div class="landing-page">
+    <header class="landing-header">
+        <div class="landing-logo">
+            <span>🎓</span> FindURJob
         </div>
+        <div class="nav-actions">
+            <a href="login.html" class="nav-login-link">Login</a>
+            <a href="login.html" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1.25rem;">Get Started</a>
+        </div>
+    </header>
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="role">Select Role</label>
-                <select id="role" class="form-select" required>
-                    <option value="">— Choose your role —</option>
-                    <option value="STUDENT">Student</option>
-                    <option value="PLACEMENT_OFFICER">Placement Officer</option>
-                    <option value="RECRUITER">Public Recruiter</option>
-                    <option value="SUPER_ADMIN">Super Admin</option>
-                </select>
-            </div>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Your Gateway to Meaningful Careers</h1>
+            <p>
+                FindURJob is a unified placement and recruitment platform designed to bridge the gap between students, placement officers, and public recruiters. It enables college organizations to run secure, isolated campus drives while letting recruiters share public opportunities with all individual students. Through features like direct resume PDF uploading and LinkedIn/GitHub profiles, FindURJob streamlines the recruitment lifecycle for everyone.
+            </p>
+        </section>
 
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
-            </div>
+        <!-- Developer Section -->
+        <section class="developer-section">
+            <h2>Developers</h2>
+            <p>Developed by:</p>
+            <div class="developer-names-container">
+                <!-- Developer 1 -->
+                <div class="developer-card">
+                    <h3>KAGITALA JYOTHIKA</h3>
+                    <div class="dev-role">Team Lead</div>
+                    <div class="dev-roll">Roll No: 24A81A05R0</div>
+                </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
-                    <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">👁️</button>
+                <!-- Developer 2 -->
+                <div class="developer-card">
+                    <h3>VEGIREDDY UDAYA SATYA LAKSHMI</h3>
+                    <div class="dev-roll">Roll No: 24A81A05U5</div>
+                </div>
+
+                <!-- Developer 3 -->
+                <div class="developer-card">
+                    <h3>SHAIK SAPHIYA</h3>
+                    <div class="dev-roll">Roll No: 24A81A05B3</div>
+                </div>
+
+                <!-- Developer 4 -->
+                <div class="developer-card">
+                    <h3>SADANALA VIJAYA RATNA KUMAR</h3>
+                    <div class="dev-roll">Roll No: 24A81A05A9</div>
+                </div>
+
+                <!-- Developer 5 -->
+                <div class="developer-card">
+                    <h3>KALLURI TANOOJ SAI</h3>
+                    <div class="dev-roll">Roll No: 25A85A0539</div>
                 </div>
             </div>
-
-            <button type="submit" class="btn-primary">Sign In</button>
-
-            <p id="message" style="text-align:center;margin-top:16px;font-weight:600;"></p>
-        </form>
-
-        <div class="auth-footer">
-            <p>Don't have an account? <a href="register.html">Create Account</a></p>
-        </div>
-    </div>
+            <div class="footer-bottom">
+                &copy; 2026 FindURJob. Designed for secure, modern student placement.
+            </div>
+        </section>
+    </main>
 </div>
-
-<script src="script.js"></script>
 
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin Dashboard — Placement Portal</title>
+    <title>Super Admin Dashboard — FindURJob</title>
     <meta name="description" content="Super Admin dashboard - manage organizations, users, and platform settings.">
     <script>
         if (window.location.protocol === "file:") {
@@ -20,7 +20,7 @@
     <div class="dashboard">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>Placement Portal</h2>
+                <h2>FindURJob</h2>
             </div>
             <nav class="sidebar-nav">
                 <button class="nav-btn active" data-section="home">
@@ -203,7 +203,7 @@
         if (!user || !token || !user.role || user.role.toUpperCase() !== "SUPER_ADMIN") {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
         if (user && user.name) {
             document.getElementById("welcome").textContent = "Welcome, " + user.name + " (Super Admin)!";
@@ -249,7 +249,7 @@
                 if (response.status === 401 || response.status === 403) {
                     localStorage.removeItem("user");
                     localStorage.removeItem("token");
-                    window.location.href = "index.html";
+                    window.location.href = "login.html";
                     return null;
                 }
 
@@ -498,7 +498,7 @@
         function logout() {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
 
         // Generate organization registration code

@@ -147,65 +147,7 @@ function initScrollAnimations() {
     elements.forEach((el) => observer.observe(el));
 }
 
-// ========== Confetti Effect ==========
-function triggerConfetti(duration = 2000) {
-    const canvas = document.createElement("canvas");
-    canvas.style.position = "fixed";
-    canvas.style.top = "0";
-    canvas.style.left = "0";
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.style.pointerEvents = "none";
-    canvas.style.zIndex = "9999";
-    document.body.appendChild(canvas);
-    
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const particles = [];
-    const colors = ["#8c5b2b", "#9b6b2f", "#e4c285", "#b77d33"];
-    
-    for (let i = 0; i < 50; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: -10,
-            vx: (Math.random() - 0.5) * 4,
-            vy: Math.random() * 3 + 2,
-            size: Math.random() * 5 + 2,
-            color: colors[Math.floor(Math.random() * colors.length)],
-        });
-    }
-    
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        particles.forEach((p, index) => {
-            p.y += p.vy;
-            p.x += p.vx;
-            p.vy += 0.1;
-            
-            ctx.fillStyle = p.color;
-            ctx.fillRect(p.x, p.y, p.size, p.size);
-            
-            if (p.y > canvas.height) {
-                particles.splice(index, 1);
-            }
-        });
-        
-        if (particles.length > 0) {
-            requestAnimationFrame(animate);
-        } else {
-            canvas.remove();
-        }
-    }
-    
-    animate();
-    
-    setTimeout(() => {
-        if (canvas.parentElement) canvas.remove();
-    }, duration);
-}
+
 
 // ========== Shake Effect ==========
 function shakeElement(element, distance = 5, duration = 500) {
@@ -273,7 +215,6 @@ document.getElementById("loginForm").addEventListener("submit", async function (
         if (response.ok) {
             message.style.color = "#10b981";
             message.textContent = "✓ Login successful! Redirecting...";
-            triggerConfetti();
 
             localStorage.setItem("user", JSON.stringify(data.user));
             localStorage.setItem("token", data.token); // Store JWT securely
@@ -290,7 +231,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
                     window.location.href = "super-admin-dashboard.html";
                 } else {
                     // Fallback for any old mappings
-                    window.location.href = "index.html";
+                    window.location.href = "login.html";
                 }
             }, 1500);
 
@@ -357,5 +298,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     
-    showToast("Welcome to Placement Management System!", "info");
+    showToast("Welcome to FindURJob!", "info");
 });
